@@ -21,7 +21,16 @@ exports.createNewUser = asyncWrap(async (req, res, next) => {
 exports.getAllUsers = asyncWrap(async (req, res, next) => {
 
     const users = await User.findAll();
-    return res.status(200).json({ message: "Users list.", users });
+
+    if (users.length >= 1) {
+        res.status(200).json({ message: "Users list.", users });
+        return;
+    }
+    else {
+        const err = new Error("User records not found!")
+        err.statusCode = 404;
+        return next(err);
+    }
 })
 
 
@@ -52,7 +61,7 @@ exports.getOneUser = asyncWrap(async (req, res, next) => {
     Requires id (userId) of an user as route params && json object of fields to update in body
     will return updated user record if success, else error
 */
-exports.updateUser = asyncWrap (async (req, res, next) => {
+exports.updateUser = asyncWrap(async (req, res, next) => {
 
     const { userId } = req.params;
     const newData = req.body;

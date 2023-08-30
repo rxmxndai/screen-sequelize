@@ -9,7 +9,7 @@ const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
     host: HOST,
     dialect: DIALECT,
     // Control logging
-    // logging: process.env.NODE_ENV === 'development' ? console.log : false, 
+    logging: false, 
 })
 
 

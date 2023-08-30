@@ -17,7 +17,7 @@ app.use(express.json());
 
 
 // routes usage
-app.use("/users", userRoutes);
+app.use("/api/users", userRoutes);
 
 
 // Catch-all middleware at the end
@@ -25,8 +25,8 @@ app.use(globalErrorHandler);
 
 
 sequelize
-    // .sync({force: true})
-    .sync()
+.sync()
+// .sync({force: true})
     .then(async () => {
         console.log("------------------------- Database connected ------------------------- ")
         app.listen(process.env.PORT, () => {
