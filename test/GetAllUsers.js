@@ -4,11 +4,11 @@ const sinon = require('sinon');
 
 
 const User = require('../models/User');
-const { createNewUser, getAllUsers, deleteUser, updateUser, getOneUser } = require("../controllers/users");
+const { getAllUsers} = require("../controllers/users");
 
 describe("GET: /api/users (Get all users)", function () {
 
-    it('Should return a list of all user records.', function (done) {
+    it('Should return a list of all user records with status code 200.', function (done) {
         let res = {
             status: function (code) {
                 this.status = code;
@@ -42,14 +42,14 @@ describe("GET: /api/users (Get all users)", function () {
 
         getAllUsers({}, res, () => { })
             .then((result) => {
+                // console.log(result.status);
                 expect(result).to.be.an("error");
                 expect(result).to.have.property("status", 500);
-                // expect(User.findAll.called).to.be.true;
                 done();
-            });
+            })
+        expect(User.findAll.called).to.be.true;
         User.findAll.restore();
     });
-
 
 
 });

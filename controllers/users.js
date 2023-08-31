@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const asyncWrap = require("../util/asyncWrap");
+const customError = require("../util/customError");
 
 
 
@@ -11,8 +12,10 @@ exports.createNewUser = asyncWrap(async (req, res, next) => {
     /* create a user record */
     const user = await User.create({ username, email, contacts });
     return res.status(201).json({ message: "User record created!", user });
-
 })
+
+
+
 
 
 
@@ -22,15 +25,11 @@ exports.getAllUsers = asyncWrap(async (req, res, next) => {
 
     const users = await User.findAll();
 
-    if (users.length >= 1) {
-        res.status(200).json({ message: "Users list.", users });
-        return;
+    if (!users ) {
+        throw new customError("User records not found!", 404, []);
     }
-    else {
-        const err = new Error("User records not found!")
-        err.statusCode = 404;
-        return next(err);
-    }
+
+    return res.status(200).json({ message: "Users list.", users });
 })
 
 
@@ -46,12 +45,12 @@ exports.getOneUser = asyncWrap(async (req, res, next) => {
     const { userId } = req.params;
 
     const user = await User.findByPk(userId);
-    if (!user) {
-        const err = new Error("User record not found!")
-        err.statusCode = 404;
-        next(err);
+
+    if (!user ) {
+        throw new customError("User record not found!", 404, []);
     }
-    return res.status(200).json({ message: "One User record", user });
+
+    return res.status(200).json({ message: "One User record.", user });
 })
 
 
@@ -72,7 +71,7 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
     // update fails because of invalid fields
     if (!valid) {
         const err = new Error("Invalid Field! Update failed")
-        err.statusCode = 400;
+        err.status = 400;
         next(err);
     }
 
@@ -80,7 +79,7 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
     const user = await User.findByPk(userId);
     if (!user) {
         const err = new Error("No user found!")
-        err.statusCode = 404;
+        err.status = 404;
         next(err);
     }
 
@@ -104,7 +103,7 @@ exports.deleteUser = asyncWrap(async (req, res, next) => {
 
     if (!user) {
         const err = new Error("No user found!")
-        err.statusCode = 404;
+        err.status = 404;
         next(err);
     }
     await user.destroy();
