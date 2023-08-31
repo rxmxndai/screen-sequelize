@@ -5,6 +5,7 @@ module.exports = (anyAsyncFunction) => async (req, res, next) => {
     if (!error.status) {
       error.status = 500;
     }
+
     next(error);
     return error;
   }

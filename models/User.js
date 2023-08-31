@@ -19,7 +19,7 @@ const User = sequelize.define("User", {
         allowNull: false
     },
     contacts: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT,
         allowNull: false
     }
 })

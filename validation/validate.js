@@ -1,17 +1,21 @@
-const { validationResult } = require("express-validator")
+const { validationResult } = require("express-validator");
+const customError = require("../util/customError");
 
 const validate = async (req, res, next) => {
     const errors = validationResult(req);
+
     // no errors -> proceed
     if (!errors.isEmpty()) {
-        const errorObject = new Error("Validation failed!");
-        errorObject.statusCode = 400;
-        errorObject.data = errors.array().map(err => {
-            return {
-                [err.path]: err.msg
+        let data = [];
+        errors.array().forEach(err => {
+            const found = data.find(existing => existing[err.path]);
+            if (!found) {
+                let obj = { [err.path]: err.msg }
+                data.push(obj);
             }
         })
-        next(errorObject);
+
+       next(new customError("Validation failed!", 400, data))
     }
     else {
         next();
