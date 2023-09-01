@@ -62,9 +62,7 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
     // fin the specific user record
     const user = await User.findByPk(userId);
     if (!user) {
-        const err = new Error("No user found!")
-        err.status = 404;
-        next(err);
+        throw new customError("No user found!", 404, [])
     }
 
     // update with new data
@@ -86,9 +84,7 @@ exports.deleteUser = asyncWrap(async (req, res, next) => {
     const user = await User.findByPk(userId);
 
     if (!user) {
-        const err = new Error("No user found!")
-        err.status = 404;
-        next(err);
+        throw new customError("No user found!", 404, [])
     }
     await user.destroy();
     return res.status(200).json({ message: "User record deleted!", user });
