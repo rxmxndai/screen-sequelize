@@ -72,10 +72,43 @@ describe("PATCH: /api/users (Update a user record)", function () {
 
         updateUser(req, res, () => { })
             .then((result) => {
-                console.log(res);
                 expect(res.status).to.be.equal(200);
                 expect(res.data).to.have.property("message", "User data updated!");
                 expect(res.data).to.have.property("user").that.is.an.instanceOf(User);
+                expect(res.data.user.username).to.be.equal("tester");
+                done();
+            })
+            .catch(err => console.log(err))
+
+    })
+
+
+
+
+    it("Should return an error with status code 400, if invalid updates are sent.", (done) => {
+        let req = {
+            params: {
+                userId: createdUserId
+            },
+            body: {
+                date: "tester"
+            }
+        }
+
+        let res = {
+            status: function (code) {
+                this.status = code;
+                return this;
+            },
+            json: function (data) {
+                this.data = data;
+            }
+        }
+
+        updateUser(req, res, () => { })
+            .then((result) => {
+                expect(result).to.have.property("status", 400)
+                expect(result).to.have.property("message", "Invalid Field! Update failed")
                 done();
             })
             .catch(err => console.log(err))

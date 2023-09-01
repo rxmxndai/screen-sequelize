@@ -56,9 +56,7 @@ exports.updateUser = asyncWrap(async (req, res, next) => {
 
     // update fails because of invalid fields
     if (!valid) {
-        const err = new Error("Invalid Field! Update failed")
-        err.status = 400;
-        next(err);
+        throw new customError("Invalid Field! Update failed", 400, []);
     }
 
     // fin the specific user record
