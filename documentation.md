@@ -113,3 +113,53 @@ CREATE DATABASE IF NOT EXISTS user_record_db;
 - Sinon: `^15.2.0`
 - Mocha: `^10.2.0`
 - Chai: `^4.3.8`
+
+
+
+<br><br><br>
+
+# Summary
+
+## Architectural Design of the system
+
+1. **MVC Design Pattern**
+The express app is built on the MVC pattern. The model representation of the user object looks like:
+```json
+{
+    "id": "Number",
+    "username": "String",
+    "email": "String",
+    "contacts": "String",
+}
+```
+
+2. **Routing Layer**
+
+The complete routes and endpoints are explained in the `API ENDPOINTS SECTION` above.
+It consists of 2 different middlewares to handle the input validation making use of `express-validator` library. The first middleware checks the validity of the input data and sends errors to the next middleware if any. The second middleware is a function that sends a concise errors data as response.
+
+3. **Controller Layer**
+
+The controller layer has 5 different functions to address the CRUD of users from the database as explained above in `API ENDPOINTS SECTION`.
+
+- The controller function is wrapped with a **global try catch** function that resolves the promises if no errors are found and sends the error to next function if any.
+
+- The app has a customError class that extends Error class and expects 
+  ``` Error Message, Error status code and Error data  ``` as parameters.
+
+- The app also has a global error handler that catches any error thrown through out the system and sends response accordingly.
+
+4. **Database Integration**
+
+The system uses MySQL database with the configuration of the following:
+
+```javascript
+   module.exports = {
+     HOST: "localhost",
+     USER: "root",
+     PASSWORD: "root",
+     DATABASE: "user_record_db",
+     DIALECT: "mysql"
+   }
+```
+And, sequelize as an ORM for querying the DB.
